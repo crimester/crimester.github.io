@@ -48,12 +48,28 @@
 				filter: drop-shadow(0px 0px 8px #ff6600ff);
 			}
 			
+			.projects_con {
+				width: 514px;
+				display: grid;
+				grid-template-columns: 256px 256px;
+				gap: 2px;
+				background-color: #ff6600ff;
+				padding: 2px;
+			}
+
+			.projects_con > div {
+				background-image: url("scanline.png");
+				background-size: 8px 8px;
+				text-align: center;
+				font-size: 30px;
+			}
+			
 		</style>
 	</head>
 	<body>
 		<center>
 			<div class="page">
-				<img class="glow"  src="logo_mono.svg" width="512" height="512"><br>
+				<img class="glow"  src="logo_mono.svg" width="512" height="256"><br>
 				
 				<div class="links1">
 					<a class="glow" href="https://www.youtube.com/channel/UCcHA7Kp42I6BGyisckYcxAA">Youtube</a><br>
@@ -62,10 +78,28 @@
 				</div>
 				<p class="glow">---------------------------</p>
 				<div class="links2">
-					<a class="glow" href="projects.html">Projects</a><br>
+					<a class="glow" href="index.html">Index</a><br>
 				</div>
 				<p class="glow">---------------------------</p>
-				<p class="glow">Hello</p>
+				<p class="glow">My projects</p>
+				<div class="projects_con">
+					<div>
+						<img class="glow"  src="logo_mono.svg" width="128" height="64"><br>
+						<a class="glow" >Games</a>
+					</div>
+					<div>
+						<img class="glow"  src="logo_mono.svg" width="128" height="64"><br>
+						<a class="glow" href="software.html">Software</a>
+					</div>
+					<div>
+						<img class="glow"  src="logo_mono.svg" width="128" height="64"><br>
+						<a class="glow" >Hardware</a>
+					</div>
+					<div>
+						<img class="glow"  src="logo_mono.svg" width="128" height="64"><br>
+						<a class="glow" >other media</a>
+					</div>
+				</div>
 			</div>
 		</center>
 	</body>
