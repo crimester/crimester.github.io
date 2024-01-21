@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>CrC</title>
+		<style>
+			@keyframes popup {
+				0% {transform: scale(0,0);}
+				50% {transform: scale(0,0);}
+				75% {transform: scale(1.2,0.1);}
+				100% {transform: scale(1,1);}
+			}
+		
+			/* unvisited link */
+			a:link {
+			  color: #ff6600ff;
+			}
+
+			/* visited link */
+			a:visited {
+			  color: #ff6600ff;
+			}
+
+			/* mouse over link */
+			a:hover {
+			  color: #ff6600ff;
+			}
+
+			/* selected link */
+			a:active {
+			  color: #ff6600ff;
+			}
+		
+			body {
+				background-image: url("scanline.png");
+				background-size: 8px 8px;
+			}
+		
+			.page {
+				animation-timing-function: linear;
+				animation-name: popup;
+				animation-duration: 0.5s;
+				background-color: #11ffee00;
+				font-family: "Courier New", Monospace;
+				font-size: 32;
+				color: #ff6600ff;			
+			}
+			
+			.glow {
+				filter: drop-shadow(0px 0px 8px #ff6600ff);
+			}
+			
+		</style>
+	</head>
+	<body>
+		<center>
+			<div class="page">
+				<img class="glow"  src="logo_mono.svg" width="512" height="512"><br>
+				
+				<div class="links1">
+					<a class="glow" href="https://www.youtube.com/channel/UCcHA7Kp42I6BGyisckYcxAA">Youtube</a><br>
+					<a class="glow"  href="https://crimester.itch.io/">Itch.io</a><br>
+					<a class="glow"  href="https://github.com/crimester">Github</a><br>
+				</div>
+				<p class="glow">---------------------------</p>
+				<div class="links2">
+					<a class="glow" href="projects.html">Projects</a><br>
+				</div>
+				<p class="glow">---------------------------</p>
+				<p class="glow">Hello</p>
+			</div>
+		</center>
+	</body>
+</html>
