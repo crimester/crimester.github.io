@@ -44,6 +44,8 @@
 			chatref.on("child_added", (snapshot) => {
 				if(snapshot.val().content.startsWith("/img")==true){
 					image(snapshot.val().content.slice(4));
+					var newline = document.createElement('br');
+					container.appendChild(newline);
 				}else{
 					var message = document.createElement('p');
 					message.textContent = snapshot.val().content;
