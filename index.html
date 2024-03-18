@@ -25,10 +25,16 @@
 		<script>
 			var container = document.getElementById('messages_holder');
 			
-			function france(url) {
+			function france() {
 				var img = document.createElement('img');
 				img.src = "https://www.lexilogos.com/images/fra.gif";
 				document.body.appendChild(img);
+			}
+
+			function image(url) {
+				var img = document.createElement('img');
+				img.src = url;
+				container.appendChild(img);
 			}
 
 			//france();
@@ -36,18 +42,30 @@
 			chatref = firebase.database().ref("chat");
 			
 			chatref.on("child_added", (snapshot) => {
-				var message = document.createElement('p');
-				message.textContent = snapshot.val().content;
-				container.appendChild(message);
+				if(snapshot.val().content.startsWith("/img")==true){
+					image(snapshot.val().content.slice(4));
+				}else{
+					var message = document.createElement('p');
+					message.textContent = snapshot.val().content;
+					container.appendChild(message);
+				}
 			})
 			
 			function submit_message(){
 				var textfield = document.getElementById('text_input');
 				var namefield = document.getElementById('namefield');
 				var mesagref = firebase.database().ref("chat/"+Math.floor(Math.random() * 1000000))
-				mesagref.set({
-					content: "sndr:"+namefield.value+" msg:"+textfield.value
-				});
+				var str = textfield.value;
+				console.log(str);
+				if(str.startsWith("/img")==true){
+					mesagref.set({
+						content: str
+					});
+				}else{
+					mesagref.set({
+						content: "sndr:"+namefield.value+" msg:"+str
+					});
+				}
 			}
 		</script>
 	</body>
