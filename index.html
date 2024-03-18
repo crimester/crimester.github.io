@@ -1,14 +1,54 @@
 <html>
 	<body>
-		<p>KRAZY KAT STUFF !!!! :3</p>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 		<script>
-			function dodajObrazeklmao(url) {
+			const firebaseConfig = {
+			  apiKey: "AIzaSyCdLhIu7KgH1plTmBXkXY8haLmsXYkmnvc",
+			  authDomain: "chatthingy-2038e.firebaseapp.com",
+			  projectId: "chatthingy-2038e",
+			  storageBucket: "chatthingy-2038e.appspot.com",
+			  messagingSenderId: "1098951815355",
+			  appId: "1:1098951815355:web:a2404909681f316b75b99e"
+			};
+			firebase.initializeApp(firebaseConfig);
+		</script>
+		<p>KRAZY KAT CHAT !!!! :3</p>
+		<div id="messages_holder">
+		
+		</div>
+		<div id="sender_area">
+			<input id="namefield" type="text"></input>
+			<input id="text_input" type="text"></input>
+			<input id="send_text" type="submit" onclick="submit_message()"></input>
+		</div>
+		<script>
+			var container = document.getElementById('messages_holder');
+			
+			function france(url) {
 				var img = document.createElement('img');
-				img.src = url;
+				img.src = "https://www.lexilogos.com/images/fra.gif";
 				document.body.appendChild(img);
 			}
 
-			dodajObrazeklmao("https://www.lexilogos.com/images/fra.gif");
+			//france();
+			
+			chatref = firebase.database().ref("chat");
+			
+			chatref.on("child_added", (snapshot) => {
+				var message = document.createElement('p');
+				message.textContent = snapshot.val().content;
+				container.appendChild(message);
+			})
+			
+			function submit_message(){
+				var textfield = document.getElementById('text_input');
+				var namefield = document.getElementById('namefield');
+				var mesagref = firebase.database().ref("chat/"+Math.floor(Math.random() * 1000000))
+				mesagref.set({
+					content: "sndr:"+namefield.value+" msg:"+textfield.value
+				});
+			}
 		</script>
 	</body>
 </html>
