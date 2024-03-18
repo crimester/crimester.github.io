@@ -14,7 +14,7 @@
 			firebase.initializeApp(firebaseConfig);
 		</script>
 		<p>KRAZY KAT CHAT !!!! :3</p>
-		<div id="messages_holder" height="512">
+		<div id="messages_holder" style="height: 512px; overflow: auto;">
 		
 		</div>
 		<div id="sender_area">
@@ -61,6 +61,8 @@
 					message.textContent = snapshot.val().content;
 					container.appendChild(message);
 				}
+
+				container.scrollTop = container.scrollHeight;
 			})
 			
 			function submit_message(){
