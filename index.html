@@ -43,10 +43,17 @@
 			
 			chatref.on("child_added", (snapshot) => {
 				if(snapshot.val().content.startsWith("/img")==true){
+					
+					var sender = document.createElement('h1');
+					sender.textContent = snapshot.val().sender;
+					container.appendChild(sender);
 					image(snapshot.val().content.slice(4));
 					var newline = document.createElement('br');
 					container.appendChild(newline);
 				}else{
+					var sender = document.createElement('h1');
+					sender.textContent = snapshot.val().sender;
+					container.appendChild(sender);
 					var message = document.createElement('p');
 					message.textContent = snapshot.val().content;
 					container.appendChild(message);
@@ -61,11 +68,13 @@
 				console.log(str);
 				if(str.startsWith("/img")==true){
 					mesagref.set({
+						sender: namefield.value,
 						content: str
 					});
 				}else{
 					mesagref.set({
-						content: "sndr:"+namefield.value+" msg:"+str
+						sender: namefield.value,
+						content: str
 					});
 				}
 			}
