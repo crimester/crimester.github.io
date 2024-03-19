@@ -14,18 +14,21 @@
 			firebase.initializeApp(firebaseConfig);
 		</script>
 		<p>KRAZY KAT CHAT !!!! :3</p>
-		
+		<div id="jukebox_holder">
+		</div>
 		<div id="messages_holder" style="height: 512px; overflow: auto;">
 		
 		</div>
 		<div id="sender_area">
 			<p>do /imgLINK !no spaces! to send an image</p>
+			<p>do /jukeLINK !no spaces! to change the jukebox song, has to be a youtube embed link</p>
 			<input id="namefield" type="text" value="name"></input>
 			<input id="text_input" type="text" value="message"></input>
 			<input id="send_text" type="submit" onclick="submit_message()"></input>
 		</div>
 		<script>
 			var container = document.getElementById('messages_holder');
+			var juke_container = document.getElementById('jukebox_holder');
 			
 			function france() {
 				var img = document.createElement('img');
@@ -42,6 +45,24 @@
 			//france();
 			
 			chatref = firebase.database().ref("chat");
+			
+			jukeboxref = firebase.database().ref("jukebox");
+			
+			console.log(jukeboxref.playing);
+			/*
+			if(jukeboxref.playing != null){
+				
+			}else{
+				jukeboxref.set({
+					playing: "https://www.youtube.com/embed/lkwnTjVvrYw?si=iGvYXcL_dV1KVeM_",
+					isplaying: true
+				});
+			}
+			*/
+			jukeboxref.on("value", (snapshot) => {
+				var embed = "<iframe width=\"256\" height=\"128\" src="+snapshot.val().playing+"&autoplay=1&amp;controls=0&t=10\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>"
+				juke_container.innerHTML = embed;
+			})
 			
 			chatref.on("child_added", (snapshot) => {
 				if(snapshot.val().sender.startsWith("/img")==true){
@@ -77,6 +98,11 @@
 					mesagref.set({
 						sender: namefield.value,
 						content: str
+					});
+				}else if(str.startsWith("/juke")==true){
+					jukeboxref.set({
+						playing: str.slice(5),
+						isplaying: true
 					});
 				}else{
 					mesagref.set({
