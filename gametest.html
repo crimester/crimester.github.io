@@ -6,6 +6,13 @@
 				img.src = "https://www.lexilogos.com/images/fra.gif";
 				document.body.appendChild(img);
 			}
+			
+			function myTimer() {
+			  const d = new Date();
+			  document.body.innerHTML += d.toLocaleTimeString();
+			}
+			
+			setInterval(myTimer, 1000);
 		</script>
 		<button onclick="france()">clickme!</button>
 	</body>
