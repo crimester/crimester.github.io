@@ -100,7 +100,7 @@ function loadModelAndReturn(modelURL, addedPlayerId) {
 function init_player(servername){
 	var texturelink = document.getElementById('texture_link');
 	if(texturelink.value.length<1){
-		texturelink.value="https://thumbs.dreamstime.com/b/happy-man-thumbs-up-sign-full-length-portrait-white-background-showing-31416426.jpg";
+		texturelink.value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAYUExURQAAAP/MmP+Y//8ymJiYmP////+YmAAAAJnb/gcAAAAIdFJOU/////////8A3oO9WQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAALpJREFUOE/VkVEShCAMQ+vqwv1vbJI2KDKz+22GoZS8UtDof/QuIJ7yvuP2VDkO2PncNYgLSGPXgBbAxtAKWBGCAfCmKxDHAYIAV/m6C0AltkVsWgDAjDCdwC0adYJSAnlLGRaAOsMn7JNPB/1JbH4lgW9SDPrkbDjuQE/9Q0EAkQT0iNZUT7VWAF7hHgJYyjEBbpI9JCzqSyLhH06RKMEVcCuaRa8AJDrR6chyEpwVlXPKteYfegHQ+wl8JBIzbTMvRQAAAABJRU5ErkJggg==";
 	}
 	
 	player_ref = firebase.database().ref("servers/"+servername+"/players/"+myuser.uid);
