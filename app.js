@@ -4,6 +4,8 @@ import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
 
 THREE.Cache.enabled = true;
 
+const textureLoader = new THREE.TextureLoader();
+
 var loader = new ColladaLoader();
 
 var playermodel = null;
@@ -42,6 +44,8 @@ window.addEventListener('keydown', (e) => pressedKeys[e.key] = true);
 
 var players = {};
 var models = {};
+
+var textures = {};
 
 var hosting = false;
 var playing = false;
@@ -94,10 +98,16 @@ function loadModelAndReturn(modelURL, addedPlayerId) {
 })();
 
 function init_player(servername){
+	var texturelink = document.getElementById('texture_link');
+	if(texturelink.value.length<1){
+		texturelink.value="https://thumbs.dreamstime.com/b/happy-man-thumbs-up-sign-full-length-portrait-white-background-showing-31416426.jpg";
+	}
+	
 	player_ref = firebase.database().ref("servers/"+servername+"/players/"+myuser.uid);
 	player_ref.set({
 		id: myuser.uid,
 		name: "bucko",
+		texlink: texturelink.value,
 		x: 0,
 		y: 0,
 		z: 0,
@@ -121,6 +131,7 @@ function init_player(servername){
 				models[playerstate.id].rotation.x=playerstate.xrot;
 				models[playerstate.id].rotation.y=playerstate.yrot;
 				models[playerstate.id].rotation.z=playerstate.zrot;
+				//textures[addedPlayer.id] = textureLoader.load(addedplayer.texlink);
 				}
 			}
 		})
@@ -131,7 +142,18 @@ function init_player(servername){
 	all_players_ref.on("child_added", (snapshot) => {
 		var addedplayer = snapshot.val();
 		if(addedplayer.id != player_ref.id){
-			models[addedplayer.id] = models[1].clone();
+			
+			textures[addedplayer.id] = textureLoader.load(addedplayer.texlink);
+			
+			// Create geometry for the quad
+			var geometry = new THREE.PlaneGeometry(2, 2);
+			geometry.rotateY(Math.PI);
+
+			// Create material with the loaded texture
+			var material = new THREE.MeshBasicMaterial({ map: textures[addedplayer.id], side: THREE.DoubleSide });
+
+			// Create a mesh with the geometry and material
+			models[addedplayer.id] = new THREE.Mesh(geometry, material);
 			console.log(models[addedplayer.id]);
 			
 			scene.add(models[addedplayer.id]);
