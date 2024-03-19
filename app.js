@@ -50,6 +50,8 @@ var textures = {};
 var hosting = false;
 var playing = false;
 
+var down =  new THREE.Vector3( 0, -1, 0 );
+
 loadModelAndReturn("bigcity.dae",0);
 loadModelAndReturn("player.dae",1);
 
@@ -216,6 +218,17 @@ function update(){
 	}else if(pressedKeys["d"]){
 		camera.rotation.y-=0.05;
 	}
+	
+	var raycaster = new THREE.Raycaster();
+	
+	raycaster.set(camera.position,down);
+
+	var intersects = raycaster.intersectObjects( scene.children );
+
+	if ( intersects.length > 0 ) {
+		console.log(intersects[0]);
+			camera.position.y=intersects[0].point.y+1;
+	}	
 	
 	if(players[myuser.uid]){
 		players[myuser.uid].x = camera.position.x;
