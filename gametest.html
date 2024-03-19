@@ -1,19 +1,38 @@
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <html>
-	<body>
+    <head>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 		<script>
-			function france() {
-				var img = document.createElement('img');
-				img.src = "https://www.lexilogos.com/images/fra.gif";
-				document.body.appendChild(img);
-			}
-			
-			function myTimer() {
-			  const d = new Date();
-			  document.body.innerHTML += d.toLocaleTimeString();
-			}
-			
-			setInterval(myTimer, 1000);
+			const firebaseConfig = {
+				apiKey: "AIzaSyBqxYck_t5zYkPLEYDvpnTazPC7az5A3-4",
+				authDomain: "thingaey.firebaseapp.com",
+				databaseURL: "https://thingaey-default-rtdb.europe-west1.firebasedatabase.app",
+				projectId: "thingaey",
+				storageBucket: "thingaey.appspot.com",
+				messagingSenderId: "37211773627",
+				appId: "1:37211773627:web:12a996c670413a9221a79e"
+			};
+			firebase.initializeApp(firebaseConfig);
 		</script>
-		<button onclick="france()">clickme!</button>
-	</body>
+		<script type="importmap">
+		  {
+			"imports": {
+			  "three": "https://unpkg.com/three@v0.162.0/build/three.module.js",
+			  "three/addons/": "https://unpkg.com/three@v0.162.0/examples/jsm/"
+			}
+		  }
+		</script>
+		<script src="oimo.min.js"></script>
+		<script src="app.js" type="module"></script>
+    </head>
+    <body>
+		<input type="text" id="server_id"></input>
+		<button id="host">host</button>
+		<button id="join">join</button>
+		<button id="disconnect">disconnect</button>
+    </body>
 </html>
