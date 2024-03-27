@@ -39,7 +39,9 @@ function draw() {
     pat_part2=false;
     pat_counter.remove();
     pat_counter=createElement('h5',"pats : "+pats);
-	nya.play();
+	if(enable_audio){
+		nya.play();
+	}
   }
   image(kinty,0,0);
   if(!enable_audio){
