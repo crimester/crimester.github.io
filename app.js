@@ -44,6 +44,8 @@ window.addEventListener('keydown', (e) => pressedKeys[e.key] = true);
 
 var players = {};
 var models = {};
+var model_velocities = {};
+var model_rotvelocities = {};
 
 var textures = {};
 
@@ -51,6 +53,8 @@ var hosting = false;
 var playing = false;
 
 var down =  new THREE.Vector3( 0, -1, 0 );
+
+var timer=0;
 
 loadModelAndReturn("bigcity.dae",0);
 loadModelAndReturn("player.dae",1);
@@ -113,9 +117,15 @@ function init_player(servername){
 		x: 0,
 		y: 0,
 		z: 0,
+		xv: 0,
+		yv: 0,
+		zv: 0,
 		xrot: 0,
+		xrotv: 0,
 		yrot: 0,
-		zrot: 0
+		yrotv: 0,
+		zrot: 0,
+		zrotv: 0
 	});
 	player_ref.onDisconnect().remove();
 	
@@ -130,9 +140,16 @@ function init_player(servername){
 				models[playerstate.id].position.x=playerstate.x;
 				models[playerstate.id].position.y=playerstate.y;
 				models[playerstate.id].position.z=playerstate.z;
+				model_velocities[playerstate.id].x=playerstate.xv;
+				model_velocities[playerstate.id].y=playerstate.yv;
+				model_velocities[playerstate.id].z=playerstate.zv;
+				
 				models[playerstate.id].rotation.x=playerstate.xrot;
 				models[playerstate.id].rotation.y=playerstate.yrot;
 				models[playerstate.id].rotation.z=playerstate.zrot;
+				model_rotvelocities[playerstate.id].x=playerstate.xrotv;
+				model_rotvelocities[playerstate.id].y=playerstate.yrotv;
+				model_rotvelocities[playerstate.id].z=playerstate.zrotv;
 				//textures[addedPlayer.id] = textureLoader.load(addedplayer.texlink);
 				}
 			}
@@ -160,6 +177,8 @@ function init_player(servername){
 			
 			scene.add(models[addedplayer.id]);
 			models[addedplayer.id].position.set(0,0,0);
+			model_velocities[addedplayer.id]= new THREE.Vector3(0,0,0);
+			model_rotvelocities[addedplayer.id]= new THREE.Vector3(0,0,0);
 		}	
 	})
 }
@@ -204,42 +223,86 @@ function init_client(){
 }
 
 function update(){
-	if(pressedKeys["w"]){
-		camera.position.x += (-Math.sin(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
-		camera.position.z += (-Math.cos(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
-		camera.position.y += (Math.sin(camera.rotation.x))*0.3;
-	}else if(pressedKeys["s"]){
-		camera.position.x -= (-Math.sin(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
-		camera.position.z -= (-Math.cos(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
-		camera.position.y -= (Math.sin(camera.rotation.x))*0.3;
-	}
+	var xv;
+	var yv;
+	var zv;
+	
+	var oldpos = camera.position;
+	var oldrot = camera.rotation;
+	
 	if(pressedKeys["a"]){
 		camera.rotation.y+=0.05;
 	}else if(pressedKeys["d"]){
 		camera.rotation.y-=0.05;
 	}
 	
+	if(pressedKeys["w"]){
+		xv= (-Math.sin(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
+		zv= (-Math.cos(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
+		yv= (Math.sin(camera.rotation.x))*0.3;
+	}else if(pressedKeys["s"]){
+		xv= -(-Math.sin(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
+		zv= -(-Math.cos(camera.rotation.y)*Math.cos(camera.rotation.x))*0.3;
+		yv= -(Math.sin(camera.rotation.x))*0.3;
+	}
+	
+	
+	
 	var raycaster = new THREE.Raycaster();
+	
+	camera.position.x+=xv;
+	camera.position.y+=0;
+	camera.position.z+=zv;
 	
 	raycaster.set(camera.position,down);
 
 	var intersects = raycaster.intersectObjects( scene.children );
 
 	if ( intersects.length > 0 ) {
-		console.log(intersects[0]);
-			camera.position.y=intersects[0].point.y+1;
-	}	
+		//console.log(intersects[0]);
+		camera.position.y=intersects[0].point.y+1;
+	}
 	
-	if(players[myuser.uid]){
+	var velocity = oldpos-camera.position;
+	var rvelocity = oldrot-camera.rotation;
+	
+	timer++;
+	
+	if(players[myuser.uid] && timer>20 && (velocity.distance>0 || rvelocity.distance>0)){
 		players[myuser.uid].x = camera.position.x;
 		players[myuser.uid].y = camera.position.y;
 		players[myuser.uid].z = camera.position.z;
+		players[myuser.uid].xv = velocity.x;
+		players[myuser.uid].yv = velocity.y;
+		players[myuser.uid].zv = velocity.z;
 		players[myuser.uid].xrot = camera.rotation.x;
 		players[myuser.uid].yrot = camera.rotation.y;
 		players[myuser.uid].zrot = camera.rotation.z;
+		players[myuser.uid].xrotv = rvelocity.x;
+		players[myuser.uid].yrotv = rvelocity.y;
+		players[myuser.uid].zrotv = rvelocity.z;
 		
 		player_ref.set(players[myuser.uid]);
+		
+		timer=0;
 	}
+	/*
+	Object.keys(models).forEach((key) => {
+		if(model_velocities[key]){
+			if(key != player_ref.id){
+				models[key].position.x=models[key].position.x+model_velocities[key].x;
+				models[key].position.y=models[key].position.y+model_velocities[key].y;
+				models[key].position.z=models[key].position.z+model_velocities[key].z;
+				
+				models[key].rotation.x=models[key].rotation.x+model_rotvelocities[key].x;
+				models[key].rotation.y=models[key].rotation.y+model_rotvelocities[key].y;
+				models[key].rotation.z=models[key].rotation.z+model_rotvelocities[key].z;
+			}
+		//textures[addedPlayer.id] = textureLoader.load(addedplayer.texlink);
+		}
+	})
+	*/
+	
 }
 
 function animate() {

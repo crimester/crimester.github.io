@@ -1,0 +1,57 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/addons/p5.sound.min.js"></script>
+<script>
+let kinty;
+
+let pats=0;
+
+let pat_part1=false;
+let pat_part2=false;
+
+let pat_counter=null;
+
+let enable_audio=false;
+
+let nya=null;
+
+function preload() {
+  kinty = loadImage('https://media1.tenor.com/m/9gXAkhMmLMAAAAAC/mmm-yess-pet-kitty.gif');
+}
+
+function setup() {
+  createCanvas(373,498);
+  pat_counter=createElement('h5',"pats : 0");
+}
+
+function draw() {
+  background(220);
+  let petframe = constrain(floor((mouseX/373)*11),0,10);
+  kinty.setFrame(petframe);
+  if(petframe>5){
+    pat_part1=true;
+  }
+  if(pat_part1 && petframe<6){
+    pat_part2=true;
+  }
+  if(pat_part2 && pat_part1){
+    pats++;
+    pat_part1=false;
+    pat_part2=false;
+    pat_counter.remove();
+    pat_counter=createElement('h5',"pats : "+pats);
+	nya.play();
+  }
+  image(kinty,0,0);
+  if(!enable_audio){
+	fill(255);
+	text("click to enable audio",64,256);
+  }
+}
+
+function mousePressed(){
+	if(!enable_audio){
+		enable_audio = true;
+		nya = loadSound('nya.wav');
+	}
+}
+</script>
