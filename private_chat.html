@@ -1,0 +1,296 @@
+<html>
+	<body>
+		<br/>
+		<a href="index.html" style="color: blue;">go back</a>
+		<br/>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+		<script>
+			const firebaseConfig = {
+			  apiKey: "AIzaSyBqxYck_t5zYkPLEYDvpnTazPC7az5A3-4",
+			  authDomain: "thingaey.firebaseapp.com",
+			  databaseURL: "https://thingaey-default-rtdb.europe-west1.firebasedatabase.app",
+			  projectId: "thingaey",
+			  storageBucket: "thingaey.appspot.com",
+			  messagingSenderId: "37211773627",
+			  appId: "1:37211773627:web:12a996c670413a9221a79e"
+			};
+			firebase.initializeApp(firebaseConfig);
+		</script>
+		<style>
+			*{
+				color: white;
+			}
+			
+			body{
+				background: black;
+			}
+			
+			.sbs {
+				display: flex;
+			}
+			
+			.btt {
+				display: flex;
+				flex-direction: column;
+				width: 256px;
+				background: #102010;
+			}
+			
+			.contact{
+				background: #103020;
+				height: 48px;
+				margin: 4px;
+			}
+			
+			.contact:hover{
+				background: #204030;
+				height: 48px;
+				margin: 4px;
+			}
+			
+			.contact_selected{
+				background: #305040;
+				height: 48px;
+				margin: 4px;
+			}
+			
+			#message_area{
+				width: 512px;
+			}
+			
+			#messages_holder {
+				float: left;
+				height: 100%;
+				width: 100%;
+				background: #103020;
+			}
+			
+			#contact_name{
+				background: #102010;
+			}
+			
+			#profile_settings{
+				background: #104030;
+			}
+			
+			input{
+				background: black;
+			}
+		</style>
+		<div class="wrapper" style="height: 512px;">
+			<div class="login">
+				login/register<br/>
+				<input id="email" type="text"></input>
+				<input id="password" type="password"></input>
+				<input id="make_login_acc" type="submit" onclick="account_button()"></input><br/>
+				if this account doesn't exist already it will be created
+			</div>
+			<div class="sbs">
+				<div class="btt">
+					<div id="profile_settings" style="height: 128px;">
+						<div id="my_name">UserName</div>
+						<div id="my_uid">UserId</div>
+					</div>
+					<div id="cons_holder">
+						<div class="add_contact" id="con_dummy">
+							<input id="add_contact_bid" type="button" onclick="add_contact_button()" value="Add contact"></input>
+						</div>
+					</div>
+				</div>
+				<div id="message_area">
+					<div id="contact_name">ContactName</div>
+					<div id="messages_holder" style="height: 512px; overflow: auto;">
+						
+					</div>
+					<div id="sender_area" style="background: #102010;">
+						<input id="text_input" type="text" value=""></input>
+						<input id="key_input" type="text" value="test"></input>
+						<input id="send_text" type="submit" onclick="submit_message()"></input>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<script>
+			const auth = firebase.auth();
+		
+			var container = document.getElementById('messages_holder');
+			var my_name_container = document.getElementById('my_name');
+			var my_uid_container = document.getElementById('my_uid');
+			var juke_container = document.getElementById('jukebox_holder');
+			
+			var acntref = null;
+			var chatref = null;
+			
+			var consref = null;
+			
+			var conref = null;
+			var conchatref = null;
+			
+			var currcon = null;
+			
+			var user = null;
+
+			var contactsdiv = document.getElementById('cons_holder');
+			
+			var keyfield = document.getElementById('key_input');
+			
+		
+			function account_button(){
+				var email = document.getElementById('email');
+				var password = document.getElementById('password');
+				auth.signInWithEmailAndPassword(email.value, password.value)
+				.then((userCredential) => {
+					user = userCredential.user;
+					loggedon();
+				})
+				.catch((error) => {
+					var errorCode = error.code;
+					var errorMessage = error.message;
+				  
+					auth.createUserWithEmailAndPassword(email.value, password.value).
+					then((userCredential) => {
+						user = userCredential.user;
+						loggedon();
+					}).catch((error) => {
+						var errorCode = error.code;
+						var errorMessage = error.message;
+					});
+				});
+				
+			}
+			
+			function loggedon(){
+				auth.onAuthStateChanged((_user) => {
+					if (_user) {
+						user = _user;
+						if(user!=null){
+							console.log("starting");
+							console.log(user);
+							start();
+						}
+					} else {
+						// User is signed out
+						// ...
+					}
+				});
+				
+			}
+
+			function image(url) {
+				var img = document.createElement('img');
+				img.src = url;
+				container.appendChild(img);
+			}
+			
+			function select_contact(key){
+				console.log(key);
+				currcon = key;
+				container.innerHTML="";
+				console.log("selecting contact "+currcon);
+				conref = firebase.database().ref("accounts/"+key);
+				conref.get().then((snapshot)=>{
+					conchatref = firebase.database().ref("accounts/"+key+"/messages/"+user.uid);
+					conchatref.on("child_added", (snapshot) => {
+						var message = document.createElement('p');
+						message.textContent = "them: "+encrypt_decrypt(snapshot.val().message,keyfield.value);
+						container.appendChild(message);
+					});
+					
+					chatref = firebase.database().ref("accounts/"+user.uid+"/messages/"+key);
+					chatref.on("child_added", (snapshot) => {
+						var message = document.createElement('p');
+						message.textContent = "you: "+encrypt_decrypt(snapshot.val().message,keyfield.value);
+						container.appendChild(message);
+					});
+				});
+			}
+			
+			function conbutton(con) {
+				var key = con.key;
+				conref = firebase.database().ref("accounts/"+key);
+				console.log(key);
+				conref.get().then((snapshot)=>{
+					var aaa = document.createElement('div');
+					aaa.innerHTML = "<input type=\"button\" class=\"contact\" onclick=\"select_contact(\`"+key+"\`)\" value = \""+snapshot.val().name+"\"></input>";
+					contactsdiv.appendChild(aaa);
+				});
+			}
+			
+			function add_contact_button(){
+				cid = prompt("Contact id", "");
+				add_contact(cid);
+			}
+			
+			function add_contact(con_id){
+				if(con_id!=null){
+					consref.get().then((snapshot)=>{
+						console.log(snapshot.val());
+						conar = snapshot.val();
+						if(conar==null){
+							conar={};
+						}
+						conar[con_id]=true;
+						consref.set(
+							conar
+						).catch((error) => {
+							console.error("Error writing data: ", error);
+						});
+					});
+				}
+			}
+			
+			function start(){
+				acntref = firebase.database().ref("accounts/"+user.uid);
+				
+				acntref.get().then((snapshot)=>{
+					console.log(acntref);
+					console.log(snapshot.val().name);
+					
+					if(snapshot.val() == null){
+						acntref.set({
+							name: "username",
+							messages: {},
+							contacts: []
+						}).catch((error) => {
+							console.error("Error writing data: ", error);
+						});
+					}
+					
+					my_name_container.innerHTML = snapshot.val().name;
+					my_uid_container.innerHTML = user.uid;
+
+					consref = firebase.database().ref("accounts/"+user.uid+"/contacts");
+					consref.on("child_added", (snapshot) => {
+						conbutton(snapshot);
+					})
+				});	
+			}
+			
+			function encrypt_decrypt(str,key){ 
+				ciph = ''; 
+				for(i=0; i<str.length; i++) { 
+					ciph += String.fromCharCode(str.charCodeAt(i).toString(10) ^ key.charCodeAt(i%(key.length)).toString(10)); // XORing with letter 'K' 
+				}
+				return ciph;
+			}
+			
+			function submit_message(){
+				var textfield = document.getElementById('text_input');
+				
+				
+				var str = encrypt_decrypt(textfield.value,keyfield.value);
+				if(str!=""){
+					var mesagref = firebase.database().ref("accounts/"+user.uid+"/messages/"+currcon+"/"+Date.now());
+					console.log(str);
+					
+					mesagref.set({
+						message: str
+					});
+				}
+			}
+		</script>
+	</body>
+</html>
