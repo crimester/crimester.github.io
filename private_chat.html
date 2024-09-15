@@ -197,6 +197,7 @@
 						var message = document.createElement('p');
 						message.textContent = "them: "+encrypt_decrypt(snapshot.val().message,keyfield.value);
 						container.appendChild(message);
+						container.scrollTop = container.scrollHeight;
 					});
 					
 					chatref = firebase.database().ref("accounts/"+user.uid+"/messages/"+key);
@@ -204,6 +205,7 @@
 						var message = document.createElement('p');
 						message.textContent = "you: "+encrypt_decrypt(snapshot.val().message,keyfield.value);
 						container.appendChild(message);
+						container.scrollTop = container.scrollHeight;
 					});
 				});
 			}
