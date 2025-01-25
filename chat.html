@@ -16,7 +16,7 @@
 			};
 			firebase.initializeApp(firebaseConfig);
 		</script>
-		<p>KRAZY KAT CHAT !!!! :3</p>
+		<p>god has forgotten this place</p>
 		<div id="jukebox_holder">
 		</div>
 		<div id="messages_holder" style="height: 512px; overflow: auto;">
@@ -61,12 +61,12 @@
 					isplaying: true
 				});
 			}
-			*/
+			
 			jukeboxref.on("value", (snapshot) => {
 				var embed = "<iframe width=\"256\" height=\"128\" src="+snapshot.val().playing+"&autoplay=1&amp;controls=0&t=10\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>"
 				juke_container.innerHTML = embed;
 			})
-			
+			*/
 			chatref.on("child_added", (snapshot) => {
 				if(snapshot.val().sender.startsWith("/img")==true){
 					image(snapshot.val().sender.slice(4));
