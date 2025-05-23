@@ -16,10 +16,10 @@
 			};
 			firebase.initializeApp(firebaseConfig);
 		</script>
-		<p>god has listened to jesus</p>
+		<p>God has listened to Jesus,,</p>
 		<div id="jukebox_holder">
 		</div>
-		<div id="messages_holder" style="height: 512px; overflow: auto;">
+		<div id="messages_holder" style="height: 512px; overflow: auto; background-color: yellow;">
 		
 		</div>
 		<div id="sender_area">
@@ -74,7 +74,17 @@
 					container.appendChild(newline);
 				}else{
 					var message = document.createElement('h1');
-					message.textContent = snapshot.val().sender;
+					var sender = snapshot.val().sender;
+					if(sender == "Jesus"){
+						var img = document.createElement('img');
+						img.src = "https://images.squarespace-cdn.com/content/v1/54808858e4b0c76689cf39e1/1509395298202-KTNBYVZRB1ST77Q5NL0R/9d9a634a6e8a24d0c76986cd4b994028.gif";
+						container.appendChild(img);
+						sender += " says...";
+					}
+					if(sender == "God"){
+						sender += " says...";
+					}
+					message.textContent = sender;
 					container.appendChild(message);
 				}
 				
@@ -94,6 +104,10 @@
 			function submit_message(){
 				var textfield = document.getElementById('text_input');
 				var namefield = document.getElementById('namefield');
+				if(textfield.value == "message" || namefield.value == "name"){
+					window.alert("donr snen mesag yet, check yo fuckin inputs");
+					return;
+				}
 				var mesagref = firebase.database().ref("chat/"+Date.now())
 				var str = textfield.value;
 				console.log(str);
