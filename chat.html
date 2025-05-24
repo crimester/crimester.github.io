@@ -16,7 +16,7 @@
 			};
 			firebase.initializeApp(firebaseConfig);
 		</script>
-		<p>God has listened to Jesus,,</p>
+		<p>God has listened to Jesus,,<br/>also have your stupid jukebox back.</p>
 		<div id="jukebox_holder">
 		</div>
 		<div id="messages_holder" style="height: 512px; overflow: auto; background-color: yellow;">
@@ -30,9 +30,17 @@
 			<input id="send_text" type="submit" onclick="submit_message()"></input>
 		</div>
 		<script>
+			//ooOOoo haii!! :3
+			
+			//is u lookin' for a good laugh u goobus?
+			
+			//well here u go
+			//a digital security guy's worst nightmare!
+			
 			var container = document.getElementById('messages_holder');
 			var juke_container = document.getElementById('jukebox_holder');
 			
+			//france
 			function france() {
 				var img = document.createElement('img');
 				img.src = "https://www.lexilogos.com/images/fra.gif";
@@ -68,7 +76,7 @@
 			jukeboxref = firebase.database().ref("jukebox");
 			
 			console.log(jukeboxref.playing);
-			/*
+
 			if(jukeboxref.playing != null){
 				
 			}else{
@@ -82,7 +90,7 @@
 				var embed = "<iframe width=\"256\" height=\"128\" src="+snapshot.val().playing+"&autoplay=1&amp;controls=0&t=10\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>"
 				juke_container.innerHTML = embed;
 			})
-			*/
+			
 			chatref.on("child_added", (snapshot) => {
 				if(moderate(snapshot) == true){
 					return;
