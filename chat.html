@@ -44,6 +44,22 @@
 				img.src = url;
 				container.appendChild(img);
 			}
+			
+			function moderate(snapshot){
+				var s = snapshot.val().sender;
+				var c = snapshot.val().content;
+				if(
+					(s=="name" && c=="message") || 
+					(s=="namea" && c=="messagea") ||
+					(s=="nameha" && c=="messageha") ||
+					(s=="NIGGA" || c=="NIGGA")
+				)
+				{
+					snapshot.ref.remove();
+					return true;
+				}
+				return false;
+			}
 
 			//france();
 			
@@ -68,6 +84,9 @@
 			})
 			*/
 			chatref.on("child_added", (snapshot) => {
+				if(moderate(snapshot) == true){
+					return;
+				}
 				if(snapshot.val().sender.startsWith("/img")==true){
 					image(snapshot.val().sender.slice(4));
 					var newline = document.createElement('br');
